@@ -1,6 +1,6 @@
 # Usage
 1. First use ./download_data.sh to download the data. (NOTE! If it says permission denied, run chmod +x download_data.sh)
-
+2. In order to get the cleaned data, use get_full_dataframe(). The data can already be split between Gouvernment and Opposition using speaker_type
 
 # Notes
 a) Dataset Exploration
