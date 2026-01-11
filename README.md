@@ -1,43 +1,69 @@
-# ParlaMint NLP Analysis
+# Partisan Framing and Emotional Appeals in Parliamentary Debate
 
-This project implements an NLP pipeline for analyzing parliamentary proceedings from the [ParlaMint dataset](https://github.com/CLARIN-ERIC/ParlaMint). It focuses on extracting, cleaning, and analyzing speeches to uncover patterns in sentiment and political alignment (Government vs. Opposition).
+NLP analysis of how government and opposition parties use different rhetorical strategies in parliamentary debates.
 
-## Features
+**Methods:** BERTopic semantic framing + DistilRoBERTa emotion detection  
+**Data:** ParlaMint corpus (26 countries, 1,900+ speeches, 2004-2024)
 
-- **Data Ingestion**: Automated downloading and parsing of TEI-formatted XML files.
-- **Metadata Enrichment**:
-  - Speaker demographics (Name, Sex).
-  - Temporal party affiliation mapping.
-  - Gov/Opp classification based on parliamentary coalition data.
-- **Analysis**:
-  - Sentiment analysis of speeches.
-  - Topic modelling and visualization.
+## Quick Start
 
-## Getting Started
+```bash
+pip install -r requirements.txt
+python example_run.py                           # Validate data extraction
+python main.py --topics "Health"                # Analyze Health topic
+```
 
-### Prerequisites
+## Usage
 
-- Python 3.12+
-- Jupyter Notebook
-- Dependencies listed in `requirements.txt`
+```bash
+python main.py                                  # All topics
+python main.py --topics "Health,Environment"   # Specific topics  
+python main.py --analysis framing              # Framing only
+python main.py --analysis emotion              # Emotion only
+```
 
-### Setup
+## Output
 
-1. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+Results in `results/`:
+- `framing_<topic>.csv` - Semantic topics and distinctive party vocabulary
+- `emotion_<topic>.csv` - Emotion probabilities by party
 
-2. **Download Data**:
-   Run the included script to clone the ParlaMint repository.
-   ```bash
-   chmod +x download_data.sh
-   ./download_data.sh
-   ```
+## Example
 
-## Project Structure
+```python
+from data import get_full_dataframe
+from framing_analysis import FramingAnalyzer
 
-- `download_data.sh`: Script to fetch the ParlaMint dataset.
-- `archive/exploration.ipynb`: Initial data exploration and prototyping.
-- `data.py`: Reusable Python module containing core parsing, taxonomy loading, and metadata extraction logic.
-- `ParlaMint/`: Data directory (created after running setup).
+df = get_full_dataframe()
+analyzer = FramingAnalyzer()
+analyzer.fit(df['text'].tolist())
+comparison = analyzer.compare_framing(df['text'].tolist(), df['speaker_type'].tolist())
+```
+
+## Files
+
+- `data.py` - ParlaMint XML parsing, metadata enrichment
+- `framing_analysis.py` - BERTopic topic modeling
+- `emotion_analysis.py` - Emotion classification
+- `main.py` - Pipeline orchestration
+- `example_run.py` - Data validation (explains why it's needed below)
+
+## Why example_run.py?
+
+`example_run.py` is a **fast data validation script** (runs in 2-3 minutes, no NLP models):
+- Verifies data.py correctly parses 1,900+ XML files
+- Confirms Government/Opposition classification works
+- Shows what CAP topics are available in the data
+- Validates sufficient samples for statistical analysis
+- Ensures pipeline foundation is sound before running expensive ML models
+
+**Use it to:**
+1. Quick sanity check that everything works on your system
+2. Understand what data is available before committing to full analysis
+3. Catch data issues early (missing files, parsing errors)
+
+## Requirements
+
+Python 3.9+, 8GB RAM. All dependencies in `requirements.txt`.
+
+See [METHODOLOGY.md](METHODOLOGY.md) for technical details.
