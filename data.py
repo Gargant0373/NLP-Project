@@ -75,8 +75,15 @@ def get_party_at_time(row, speaker_info):
 
 def extract_country_code(file_path):
     """(Private) Extracts country code from file path structure."""
-    parts = str(file_path).split('/')
-    return next((p.replace('ParlaMint-', '') for p in parts if p.startswith('ParlaMint-')), 'Unknown')
+    parts = Path(file_path).parts
+    for part in parts:
+        if part.startswith('ParlaMint-') and '-' in part:
+            # Extract country code (e.g., 'AT' from 'ParlaMint-AT')
+            code = part.split('-')[1]
+            # Return first 2-letter code (handles cases like 'ParlaMint-ES-CT')
+            if len(code) >= 2:
+                return code[:2] if len(code) > 2 else code
+    return 'Unknown'
 
 def get_min_max_dates(country_code, df):
     """
