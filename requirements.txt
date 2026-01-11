@@ -3,3 +3,10 @@ lxml
 conllu
 matplotlib
 seaborn
+sentence-transformers
+bertopic
+transformers
+umap-learn
+hdbscan
+scikit-learn
+torch
