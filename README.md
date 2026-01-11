@@ -7,6 +7,13 @@ NLP analysis of how government and opposition parties use different rhetorical s
 
 ## Quick Start
 
+**Download Data**:
+Run the included script to clone the ParlaMint repository.
+```bash
+chmod +x download_data.sh
+./download_data.sh
+```
+
 ```bash
 pip install -r requirements.txt
 python example_run.py                           # Validate data extraction
@@ -53,14 +60,8 @@ comparison = analyzer.compare_framing(df['text'].tolist(), df['speaker_type'].to
 `example_run.py` is a **fast data validation script** (runs in 2-3 minutes, no NLP models):
 - Verifies data.py correctly parses 1,900+ XML files
 - Confirms Government/Opposition classification works
-- Shows what CAP topics are available in the data
 - Validates sufficient samples for statistical analysis
-- Ensures pipeline foundation is sound before running expensive ML models
-
-**Use it to:**
-1. Quick sanity check that everything works on your system
-2. Understand what data is available before committing to full analysis
-3. Catch data issues early (missing files, parsing errors)
+- Ensures pipeline foundation is sound before running models
 
 ## Requirements
 
