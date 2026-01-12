@@ -2,3 +2,5 @@ ParlaMint/
 .venv/
 venv/
 guide for parlasent.md
+
+__pycache__/

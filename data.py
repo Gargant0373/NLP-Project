@@ -442,10 +442,11 @@ def get_full_dataframe(data_folder="ParlaMint"):
     df = enrich_dataframe(df, data_path)
     print(df.shape)
 
-    # 4. Load speaker types and clean
+    # 4. Load speaker types (keep all speeches for comparison)
     print("Loading speaker types...")
     df = load_speaker_type(Path(get_samples_path()), df)
-    df = clean_speaker_types(df)
+    # Commented out to keep all speeches including 'Other' category for verification
+    # df = clean_speaker_types(df)
 
     print("Dataframe construction complete.")
     return df
