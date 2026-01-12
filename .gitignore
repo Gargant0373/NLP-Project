@@ -1,3 +1,4 @@
 ParlaMint/
 .venv/
 venv/
+__pycache__/
