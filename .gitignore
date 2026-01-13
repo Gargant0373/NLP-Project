@@ -4,3 +4,5 @@ venv/
 guide for parlasent.md
 
 __pycache__/
+parlasent_experiment
+results/
