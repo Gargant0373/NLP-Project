@@ -1,9 +1,10 @@
 """
-Main pipeline orchestrating framing and emotion analysis.
+Main pipeline orchestrating framing, emotion, and sentiment analysis.
 
 Usage:
-    python main.py                                      # All topics
+    python main.py                                      # All analyses, all topics
     python main.py --topics "Health" --analysis emotion # Single topic, emotion only
+    python main.py --analysis sentiment                 # Sentiment only
 """
 
 import argparse
@@ -12,6 +13,7 @@ from pathlib import Path
 from data import get_full_dataframe
 from framing_analysis import FramingAnalyzer
 from emotion_analysis import EmotionAnalyzer, compare_emotions
+from sentiment_analysis import SentimentAnalyzer, aggregate_by_entity_type, compare_sentiments
 
 
 def load_data(cache_file='speeches_data.csv', force_reload=False):
@@ -128,38 +130,90 @@ def run_emotion(df_exp, valid_topics, output_dir='results'):
             print(f"  Error: {str(e)[:100]}")
 
 
+def run_sentiment(df_exp, valid_topics, output_dir='results'):
+    """Run sentiment analysis on selected topics."""
+    print("\n" + "="*70)
+    print("SENTIMENT ANALYSIS (Institutional Targets)")
+    print("="*70)
+
+    Path(output_dir).mkdir(exist_ok=True)
+
+    # Initialize model once
+    print("\nLoading ParlaSent model...")
+    analyzer = SentimentAnalyzer()
+
+    for topic, gov_count, opp_count in valid_topics:
+        print(f"\n{topic} ({gov_count+opp_count} sentences)...")
+
+        topic_df = df_exp[df_exp['topic_labels'] == topic].copy()
+
+        try:
+            # Apply sentiment model
+            print("  [1/3] Applying ParlaSent model...")
+            topic_df = analyzer.analyze_dataframe(topic_df, batch_size=16)
+
+            # Aggregate by entity type
+            print("  [2/3] Aggregating by entity type...")
+            df_agg = aggregate_by_entity_type(topic_df)
+
+            if df_agg.empty:
+                print("  ⚠ No entity data for aggregation")
+                continue
+
+            # Compare gov vs opp
+            print("  [3/3] Comparing Gov vs Opp...")
+            comparison = compare_sentiments(df_agg)
+
+            # Save results
+            outfile = Path(output_dir) / f"sentiment_{topic.replace(' ', '_')}.csv"
+            comparison.to_csv(outfile, index=False)
+
+            # Show summary
+            for _, row in comparison.iterrows():
+                org = f"ORG={row.get('ORG_sentiment_mean', 'N/A'):.2f}" if pd.notna(row.get('ORG_sentiment_mean')) else "ORG=N/A"
+                loc = f"LOC={row.get('LOC_sentiment_mean', 'N/A'):.2f}" if pd.notna(row.get('LOC_sentiment_mean')) else "LOC=N/A"
+                misc = f"MISC={row.get('MISC_sentiment_mean', 'N/A'):.2f}" if pd.notna(row.get('MISC_sentiment_mean')) else "MISC=N/A"
+                print(f"    {row['group']}: {org}, {loc}, {misc}")
+
+        except Exception as e:
+            print(f"  Error: {str(e)[:100]}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Parliamentary debate analysis")
-    parser.add_argument('--topics', type=str, default=None, 
+    parser.add_argument('--topics', type=str, default=None,
                        help='Comma-separated topics (e.g., "Health,Environment")')
-    parser.add_argument('--analysis', choices=['framing', 'emotion', 'both'], 
-                       default='both')
+    parser.add_argument('--analysis', choices=['framing', 'emotion', 'sentiment', 'all'],
+                       default='all', help='Analysis type (default: all)')
     parser.add_argument('--reload', action='store_true')
     parser.add_argument('--output', type=str, default='results')
-    
+
     args = parser.parse_args()
-    
+
     # Parse topics
     topics = None
     if args.topics:
         topics = [t.strip() for t in args.topics.split(',')]
-    
+
     # Load and prepare
     print("Loading data...")
     df = load_data(force_reload=args.reload)
     df_exp, valid_topics = prepare_data(df, topics=topics)
-    
+
     if df_exp is None:
         print("Cannot proceed without valid topics.")
         return
-    
+
     # Run analyses
-    if args.analysis in ['framing', 'both']:
+    if args.analysis in ['framing', 'all']:
         run_framing(df_exp, valid_topics, args.output)
-    
-    if args.analysis in ['emotion', 'both']:
+
+    if args.analysis in ['emotion', 'all']:
         run_emotion(df_exp, valid_topics, args.output)
-    
+
+    if args.analysis in ['sentiment', 'all']:
+        run_sentiment(df_exp, valid_topics, args.output)
+
     print("\n" + "="*70)
     print("Complete - Results in", args.output)
     print("="*70)
