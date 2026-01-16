@@ -1,0 +1,3 @@
+group,n_speeches,overall_sentiment_mean,overall_sentiment_std,ORG_sentiment_mean,ORG_sentiment_std,ORG_n_speeches,ORG_total_mentions,LOC_sentiment_mean,LOC_sentiment_std,LOC_n_speeches,LOC_total_mentions,MISC_sentiment_mean,MISC_sentiment_std,MISC_n_speeches,MISC_total_mentions
+Government,58,0.9869949302876374,0.046792829823369415,0.9852662367859122,0.08463902580258514,33,134,0.9216814633636247,0.24818449945870766,14,21,0.917026604546441,0.2415039246466765,15,35
+Opposition,27,0.9592868917748147,0.19074548762493118,0.92476753393809,0.291374088151892,15,31,0.9451139072577158,0.13444292119367124,6,9,1.0,0.0,5,19

@@ -9,6 +9,7 @@ Creates:
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 # Load results
 df = pd.read_csv('sentiment_results_full_dataset.csv')
@@ -17,6 +18,10 @@ df = pd.read_csv('sentiment_results_full_dataset.csv')
 plt.style.use('seaborn-v0_8-darkgrid')
 plt.rcParams['figure.dpi'] = 100
 plt.rcParams['font.size'] = 10
+
+# Check if there is a results directory, create if not
+if not os.path.exists('results'):
+    os.makedirs('results')
 
 # ============================================================================
 # Figure 1: Bar Chart - Overall Sentiment by Entity Type
