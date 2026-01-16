@@ -15,7 +15,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 
-def load_full_data(cache_file='speeches_data.csv', min_sentences_per_group=20):
+def load_full_data(cache_file='./speeches_data.csv', min_sentences_per_group=20):
     """Load full dataset and identify topics with sufficient data.
 
     Matches methodology of main.py framing/emotion analyses by filtering on
@@ -169,7 +169,7 @@ def main():
     combined_results = pd.concat(all_results, ignore_index=True)
 
     # Save comprehensive results
-    output_file = 'sentiment_results_full_dataset.csv'
+    output_file = './results/sentiment_results_full_dataset.csv'
     combined_results.to_csv(output_file, index=False)
     print(f"\n✓ Full results saved to {output_file}")
 

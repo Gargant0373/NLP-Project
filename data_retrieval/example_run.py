@@ -281,7 +281,6 @@ def main():
     print("  1. Review the output above to understand data structure")
     print(f"  2. Use {subset_file} for quick pipeline testing")
     print("  3. Run 'python main.py' for full analysis")
-
-
+    
 if __name__ == "__main__":
     main()

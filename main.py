@@ -10,10 +10,10 @@ Usage:
 import argparse
 import pandas as pd
 from pathlib import Path
-from data import get_full_dataframe
-from framing_analysis import FramingAnalyzer
-from emotion_analysis import EmotionAnalyzer, compare_emotions
-from sentiment_analysis import SentimentAnalyzer, aggregate_by_entity_type, compare_sentiments
+from data_retrieval.data import get_full_dataframe
+from framing_analysis.framing_analysis import FramingAnalyzer
+from emotion_analysis.emotion_analysis import EmotionAnalyzer, compare_emotions
+from sentiment_analysis.sentiment_analysis import SentimentAnalyzer, aggregate_by_entity_type, compare_sentiments
 
 
 def load_data(cache_file='speeches_data.csv', force_reload=False):

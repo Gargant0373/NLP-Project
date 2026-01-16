@@ -3,6 +3,7 @@
 NLP analysis of how government and opposition parties use different rhetorical strategies in parliamentary debates.
 
 **Methods:** BERTopic semantic framing + DistilRoBERTa emotion detection + ParlaSent institutional sentiment
+
 **Data:** ParlaMint corpus (26 countries, 1,900+ speeches, 2004-2024)
 
 ## Quick Start
@@ -16,7 +17,7 @@ chmod +x download_data.sh
 
 ```bash
 pip install -r requirements.txt
-python example_run.py                           # Validate data extraction
+python data_retreival/example_run.py           # Validate data extraction
 python main.py --topics "Health"                # Analyze Health topic
 ```
 
@@ -68,13 +69,13 @@ comparison = compare_sentiments(df_agg)             # Compare gov vs opp
 
 ## Files
 
-- `data.py` - ParlaMint XML parsing, metadata enrichment
-- `framing_analysis.py` - BERTopic topic modeling
-- `emotion_analysis.py` - Emotion classification
-- `sentiment_analysis.py` - ParlaSent institutional sentiment analysis
+- `data_retrieval/data.py` - ParlaMint XML parsing, metadata enrichment
+- `framing_analysis/framing_analysis.py` - BERTopic topic modeling
+- `emotion_analysis/emotion_analysis.py` - Emotion classification
+- `sentiment_analysis/sentiment_analysis.py` - ParlaSent institutional sentiment analysis
 - `main.py` - Pipeline orchestration (all analyses)
-- `example_run.py` - Data validation (explains why it's needed below)
-- `visualize_sentiment.py` - Generate sentiment visualization plots
+- `data_retrieval/example_run.py` - Data validation (explains why it's needed below)
+- `sentiment_analysis/visualize_sentiment.py` - Generate sentiment visualization plots
 
 ## Why example_run.py?
 
@@ -87,5 +88,3 @@ comparison = compare_sentiments(df_agg)             # Compare gov vs opp
 ## Requirements
 
 Python 3.9+, 8GB RAM. All dependencies in `requirements.txt`.
-
-See [METHODOLOGY.md](METHODOLOGY.md) for technical details.
